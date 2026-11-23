@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>__DOC_TITLE__</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--bd:#e3e6ec;--tx:#1f2329;--sub:#646a73;--pri:#2563eb;--pri-bg:#eaf1ff;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+header{background:var(--card);border-bottom:1px solid var(--bd);padding:20px 24px}
+h1{margin:0 0 6px;font-size:20px}
+.meta{color:var(--sub);font-size:13px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;padding:16px 24px;position:sticky;top:0;background:var(--bg);z-index:5}
+input,select{padding:8px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);font-size:14px;color:var(--tx);outline:none}
+input{flex:1;min-width:220px}
+input:focus,select:focus{border-color:var(--pri)}
+.chip{padding:7px 14px;border:1px solid var(--bd);border-radius:999px;background:var(--card);cursor:pointer;font-size:13px;color:var(--sub)}
+.chip.on{background:var(--pri-bg);border-color:var(--pri);color:var(--pri);font-weight:600}
+main{padding:0 24px 40px}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+th{background:#f1f3f7;text-align:left;padding:10px 12px;font-size:13px;font-weight:600;color:var(--sub);border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:11px 12px;border-bottom:1px solid #f0f1f4;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfc}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;background:var(--pri-bg);color:var(--pri);font-size:12px;white-space:nowrap}
+.cn{font-weight:600}
+.t{color:var(--sub);font-size:13px;margin-top:3px}
+.note{color:#3c4149;font-size:13px;margin-top:4px}
+a{color:var(--pri);text-decoration:none;word-break:break-all}
+a:hover{text-decoration:underline}
+.num{white-space:nowrap}
+.hide{display:none}
+footer{padding:16px 24px 40px;color:var(--sub);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+<h1>__TITLE__</h1>
+<div class="meta">检索时间 __DATE__ ｜ __YEAR_RANGE__ 年 ｜ 共 <b id="tot"></b> 篇 ｜ DOI 均经 Crossref 核验 ｜ IF 为 __IF_YEAR__ JCR 近似参考值</div>
+</header>
+<div class="bar">
+  <input id="q" placeholder="搜索题名 / 中文译名 / 期刊 / 作者 / DOI…">
+  <select id="cat"><option value="">全部方向</option>__CAT_OPTIONS__</select>
+  <select id="tier"><option value="">全部档次</option>__TIER_OPTIONS__</select>
+  <select id="sortby"><option value="if">按影响因子</option><option value="c">按被引次数</option><option value="y">按年份</option></select>
+  <button class="chip" id="csv">导出 CSV</button>
+</div>
+<main>
+<table>
+<thead><tr><th>#</th><th>方向/档次</th><th>题名与要点</th><th>期刊</th><th>年</th><th>IF≈</th><th>被引</th><th>DOI</th></tr></thead>
+<tbody id="tb"></tbody>
+</table>
+<div id="empty" class="hide" style="padding:24px;color:#646a73">没有匹配的文献。</div>
+</main>
+<footer>__FOOTER__</footer>
+<script>
+const D=__DATA__;
+const tb=document.getElementById('tb'),q=document.getElementById('q'),
+ cat=document.getElementById('cat'),tier=document.getElementById('tier'),
+ sb=document.getElementById('sortby'),empty=document.getElementById('empty');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function render(){
+ const k=q.value.trim().toLowerCase();
+ let rows=D.filter(r=>{
+  if(cat.value && !r.cat.startsWith(cat.value)) return false;
+  if(tier.value && !r.cat.includes(tier.value)) return false;
+  if(!k) return true;
+  return (r.t+' '+r.cn+' '+r.j+' '+r.au+' '+r.doi+' '+r.note).toLowerCase().includes(k);
+ });
+ const s=sb.value;
+ rows.sort((a,b)=> s==='if'? (b.if||0)-(a.if||0) : s==='c'? (b.c||0)-(a.c||0) : (b.y||0)-(a.y||0));
+ tb.innerHTML=rows.map((r,i)=>`<tr>
+  <td class="num">${i+1}</td>
+  <td><span class="badge">${esc(r.cat)}</span></td>
+  <td><div class="cn">${esc(r.cn||r.t)}</div><div class="t">${r.cn?esc(r.t):''}</div><div class="note">${esc(r.note)}</div><div class="t">${esc(r.au)}</div></td>
+  <td>${esc(r.j)}</td><td class="num">${esc(r.y)}</td><td class="num">${esc(r.if)}</td><td class="num">${esc(r.c)}</td>
+  <td><a href="https://doi.org/${encodeURIComponent(r.doi)}" target="_blank">${esc(r.doi)}</a></td></tr>`).join('');
+ empty.classList.toggle('hide',rows.length>0);
+ document.getElementById('tot').textContent=rows.length;
+}
+[q,cat,tier,sb].forEach(e=>e.addEventListener('input',render));
+document.getElementById('csv').onclick=()=>{
+ const head=['方向档次','中文译名','原题','期刊','年份','IF','被引','作者','要点','DOI'];
+ const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+ const body=D.map(r=>[r.cat,r.cn,r.t,r.j,r.y,r.if,r.c,r.au,r.note,r.doi].map(q).join(','));
+ const blob=new Blob(['\ufeff'+head.join(',')+'\n'+body.join('\n')],{type:'text/csv;charset=utf-8'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='__CSV_NAME__';a.click();
+};
+render();
+</script>
+</body></html>

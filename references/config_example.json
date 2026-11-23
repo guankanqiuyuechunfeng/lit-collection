@@ -1,0 +1,84 @@
+{
+  "title": "耐磨 / 减磨 / 摩阻材料 —— 高影响力文献清单",
+  "topic": "耐磨减磨摩阻材料",
+  "year_from": 2021,
+  "year_to": 2026,
+  "if_year": "2024",
+  "if_threshold": 5.0,
+  "rel_min": 8,
+  "per_cat_high": 18,
+  "per_cat_low": 8,
+  "cn_pick": 12,
+  "use_openalex": true,
+  "output_dir": "..",
+  "mailto": "workbuddy@example.com",
+  "cn_issns": [
+    "2223-7690", "1005-0302", "1001-0521", "0577-6686", "0412-1961",
+    "1000-324X", "1003-6326", "1674-7321", "2095-9273", "1674-4799"
+  ],
+  "categories": [
+    {
+      "name": "耐磨材料",
+      "queries": [
+        "wear resistant material",
+        "wear resistance coating",
+        "anti-wear lubricant additive",
+        "high entropy alloy wear resistance tribological",
+        "laser cladding wear resistant coating",
+        "hard coating toughness wear protection",
+        "tribological behavior wear mechanism coating"
+      ],
+      "strong": [
+        "wear resistant", "wear resistance", "anti-wear", "antiwear",
+        "abrasion resistance", "erosion wear", "sliding wear", "wear rate",
+        "wear protection", "wear performance", "wear behavior", "wear mechanisms",
+        "fretting wear", "tribological propert", "hardfacing", "laser cladding"
+      ],
+      "weak": [
+        "hardness", "toughness", "coating", "composite", "alloy", "ceramic",
+        "surface", "microstructure", "mechanical properties", "wear"
+      ]
+    },
+    {
+      "name": "减磨材料",
+      "queries": [
+        "superlubricity",
+        "low friction coating",
+        "self-lubricating composite",
+        "solid lubricant friction reduction",
+        "two-dimensional material lubrication friction",
+        "liquid superlubricity hydration lubrication",
+        "MXene graphene lubricant additive tribological"
+      ],
+      "strong": [
+        "superlubricity", "superlubricious", "ultralow friction", "ultra-low friction",
+        "friction reduction", "friction-reducing", "low friction", "low-friction",
+        "self-lubricating", "self-lubrication", "solid lubricant", "lubricat",
+        "anti-friction", "tribofilm", "lubricant additive"
+      ],
+      "weak": [
+        "friction", "tribology", "graphene", "mxene", "mos2", "2d material",
+        "ionic liquid", "nanoparticle", "film", "additive"
+      ]
+    },
+    {
+      "name": "摩阻材料",
+      "queries": [
+        "brake friction material",
+        "friction material brake pad composite",
+        "friction material formulation wear emissions",
+        "clutch friction material tribological performance",
+        "brake pad wear particle emission",
+        "copper-free friction material brake"
+      ],
+      "strong": [
+        "brake", "brake pad", "friction material", "clutch", "friction lining",
+        "friction composite", "disc brake", "friction coefficient", "brake wear"
+      ],
+      "weak": [
+        "friction", "wear", "pad", "composite", "fiber", "resin", "filler",
+        "emission", "particle", "copper", "tribology", "rotor"
+      ]
+    }
+  ]
+}
